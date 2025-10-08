@@ -5,8 +5,8 @@
 // Database connection parameters
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'ecotech_supplies');
-define('DB_USER', 'root');  // Change this for production
-define('DB_PASS', '');      // Change this for production
+define('DB_USER', 'ecotech');  // Change this for production
+define('DB_PASS', 'password');      // Change this for production
 
 // Application settings
 define('APP_NAME', 'EcoTech Supplies');
