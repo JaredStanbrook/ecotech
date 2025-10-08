@@ -31,7 +31,7 @@ try {
         $insertSql = "INSERT INTO cart_items (product_id, quantity, " . ($userId ? "user_id" : "session_id") . ") VALUES (?, ?, ?)";
         $conn->prepare($insertSql)->execute([$productId, $quantity, $userId ?: $sessionId]);
     }
-    jsonResponse(true, 'Product added to cart');
+    jsonResponse(true, 'Product added to cart!');
 } catch (Exception $e) {
     jsonResponse(false, 'Error adding to cart');
 }

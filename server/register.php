@@ -50,7 +50,7 @@ try {
         $state,
         $postcode
     ]);
-    jsonResponse(true, 'Registration successful');
+    jsonResponse(true, 'Registration successful! Please login.');
 } catch (Exception $e) {
-    jsonResponse(false, 'Error during registration');
+    jsonResponse(false, 'An error occurred. Please try again.');
 }

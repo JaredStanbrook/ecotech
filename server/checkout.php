@@ -51,7 +51,7 @@ try {
     // Clear cart
     $conn->prepare("DELETE FROM cart_items WHERE user_id = ?")->execute([$userId]);
 
-    jsonResponse(true, 'Order placed successfully', ['orderId' => $orderId]);
+    jsonResponse(true, 'Order placed successfully!', ['orderId' => $orderId]);
 } catch (Exception $e) {
     jsonResponse(false, 'Error during checkout');
 }

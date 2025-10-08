@@ -29,6 +29,6 @@ try {
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     jsonResponse(true, '', $products);
 } catch (Exception $e) {
-    jsonResponse(false, 'Error fetching products');
+    jsonResponse(false, 'Failed to load products.');
 }
 ?>
