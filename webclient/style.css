@@ -43,8 +43,6 @@ header {
 .logo {
   font-size: 1.8rem;
   font-weight: bold;
-  display: flex;
-  align-items: center;
 }
 
 .logo::before {
