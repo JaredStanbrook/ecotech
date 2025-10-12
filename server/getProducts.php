@@ -1,5 +1,29 @@
 <?php
-// server/products.php
+/**
+ * Retrieves all products
+ * 
+ * Supported HTTP Methods:
+ * - GET
+ * 
+ * Response:
+ * - JSON { 
+ *    success: bool,
+ *    message: string,
+ *    data: object {
+ *      product_name: string,
+ *      category_id: int,
+ *      description: string,
+ *      price: float,
+ *      stock_quantity: int,
+ *      image_url: string,
+ *      specifications: string,
+ *      eco_rating: int,
+ *      created_at: string,
+ *      updated_at: string
+ *      category_name: string,
+ *    } 
+ *  }
+ */
 require_once 'config.php';
 
 // Only allow GET requests

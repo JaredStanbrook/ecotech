@@ -1,5 +1,38 @@
 <?php
-// Server/login.php
+/**
+ * Handles user login authentication.
+ *
+ * Accept a POST request containing a username and password. Verifies the 
+ * credentials against the database, and starts a user session if successful.
+ *
+ * Request Method:
+ * - POST
+ *
+ * Expected POST Parameters:
+ * - username (string)
+ * - password (string)
+ *
+ * Response:
+ * - JSON {
+ *    success: bool,
+ *    message: string,
+ *    data: object {
+ *      username: string,
+ *      email: string,
+ *      user_type: string,
+ *      first_name: string,
+ *      last_name: string
+ *    }
+ *  }
+ *
+ * @throws Exception If the database query or login process fails.
+ */
+$_SESSION['user_id'] = $user['user_id'];
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['email'] = $user['email'];
+        $_SESSION['user_type'] = $user['user_type'];
+        $_SESSION['first_name'] = $user['first_name'];
+        $_SESSION['last_name'] = $user['last_name'];
 require_once 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

@@ -1,5 +1,45 @@
 <?php
-// server/admin_products.php
+/**
+ * Product Management Endpoint
+ * 
+ * Supported HTTP Methods:
+ * - GET: Retrieve all products
+ * - POST: add, update, or delete actions on products
+ *
+ * Expected POST Parameters:
+ * - action (string): 'add', 'update', or 'delete'
+ * - product_id (int)
+ * - product_name (string)
+ * - category_id (int)
+ * - description (string)
+ * - price (float)
+ * - stock_quantity (int)
+ * - image_url (string)
+ * - specifications (string)
+ * - eco_rating (int)
+ *
+ * Responses:
+ *  GET:
+ *  - JSON { success: bool, 
+ *           message: string, 
+ *           data: array<object> [
+ *            {
+ *              product_id: int,
+ *              product_name: string,
+ *              category_id: int,
+ *              description: string,
+ *              price: float,
+ *              stock_quantity: int,
+ *              image_url: string,
+ *              specifications: string,
+ *              eco_rating: int
+ *            },
+ *              ...
+ *           ]
+ *         }
+ *  POST:
+ *  - JSON { success: bool, message: string }
+ */
 require_once 'config.php';
 
 if (!isStaff()) {

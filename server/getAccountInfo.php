@@ -1,5 +1,37 @@
 <?php
-// server/getAccountInfo.php
+/**
+ * Returns user account info for a logged-in user.
+ * 
+ * Supported HTTP Methods:
+ * - GET
+ *
+ * Responses:
+ *  - JSON { 
+ *  success: bool, 
+ *  message: string, 
+ *  data: object { 
+ *    user: object {
+ *      user_id: int,
+ *      username: string,
+ *      email: string,
+ *      user_type: string,
+ *      first_name: string,
+ *      last_name: string
+ *    }, 
+ *    orders: object {
+ *      order_id: int,
+ *      user_id: int,
+ *      order_date: string,
+ *      total_amount: float,
+ *      status: string,
+ *      shipping_address: string,
+ *      shipping_city: string,
+ *      shipping_state: string,
+ *      shipping_postcode: string
+ *    } 
+ *  }
+ *}
+ */
 require_once 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {

@@ -1,8 +1,38 @@
 <?php
-// server/cart.php
+/**
+ * Handles shopping cart operations for the current session or a logged in user
+ *
+ * Supported HTTP Methods:
+ * - GET: Retrieves shopping cart items for the current user or session.
+ * - POST: Adds, updates, or removes items in the cart based on the specified action.
+ *
+ * Expected POST Parameters:
+ * - action (string): 'add', 'update', or 'remove'
+ * - product_id (int)
+ * - quantity (int)
+ *
+ * Responses:
+ * GET: 
+ * - JSON { 
+ *    success: bool,
+ *    message: string,
+ *    data: object {
+ *      cart_id: int,
+ *      product_id: int, 
+ *      quantity: int, 
+ *      product_name: string, 
+ *      price: float, 
+ *      image_url: string
+ *    } 
+ * }
+ * POST:
+ * - JSON { success: bool, message: string }
+ *
+ * @throws Exception If database queries fail or an invalid request method is used.
+ */
+
 require_once 'config.php';
 
-// Only allow GET or POST requests
 if (!in_array($_SERVER['REQUEST_METHOD'], ['GET', 'POST'])) {
     jsonResponse(false, 'Invalid request method');
 }

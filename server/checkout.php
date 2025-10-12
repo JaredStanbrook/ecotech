@@ -1,5 +1,21 @@
 <?php
-// server/checkout.php
+/**
+ * Checkout endpoint for a logged-in user
+ * 
+ * Handles order creation for the products in a logged-in user's shopping cart.
+ * Uses user_id from session.
+ * 
+ * Supported HTTP Methods:
+ * - POST
+ *  
+ * Response:
+ * - JSON { success: bool, 
+ *          message: string,
+ *          data: object {
+ *            productId: int
+ *          }
+ *        }
+ */
 require_once 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

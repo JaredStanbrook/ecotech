@@ -1,5 +1,13 @@
 <?php
-// server/logout.php
+/**
+ * Handles user logout and starts a new session.
+ *
+ * Request Method:
+ * - POST
+ *
+ * Response:
+ * - JSON { success: bool, message: string }
+ */
 require_once 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

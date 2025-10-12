@@ -1,6 +1,28 @@
 <?php
-// Server/checkSession.php
+/**
+ * Check User Session EndpointVerifies whether a user is currently logged in and
+ * returns their session details. Expects an HTTP GET request.
+ * 
+ * Supported HTTP Methods:
+ * - GET
+ * 
+ * Response:
+ * - JSON { success: bool, 
+ *          message: string,
+ *          data: object {
+ *            userId: int,
+ *            username: string,
+ *            firstName: string,
+ *            lastName: string,
+ *            userType: string
+ *          }
+ *        }
+ */ 
 require_once 'config.php';
+
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    jsonResponse(false, 'Invalid request method');
+}
 
 if (isLoggedIn()) {
     jsonResponse(true, '', [

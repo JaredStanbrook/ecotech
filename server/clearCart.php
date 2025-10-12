@@ -1,5 +1,13 @@
 <?php
-// server/clearCart.php
+/**
+ * Clear the shopping cart for the current logged-in user or session.
+ * 
+ * Supported HTTP Methods:
+ * - POST
+ * 
+ * Response:
+ * - JSON { success: bool, message: string }
+ */ 
 require_once 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
