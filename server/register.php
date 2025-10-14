@@ -1,5 +1,32 @@
 <?php
-// Server/register.php
+/**
+ * Registers a new customer account.
+ *
+ * Accept a POST request containing a username and password. Verifies the 
+ * credentials against the database, and starts a user session if successful.
+ *
+ * Request Method:
+ * - POST
+ *
+ * Expected POST Parameters:
+ * - username (string)
+ * - email (string)
+ * - password (string)
+ * 
+ * Optional POST Parameters:
+ * - first_name (string)
+ * - last_name (string)
+ * - phone (string)
+ * - address (string)
+ * - city (string)
+ * - state (string)
+ * - postcode (string)
+ *
+ * Response:
+ * - JSON { success: bool, message: string }
+ *
+ * @throws Exception If the database query fails.
+ */
 require_once 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -50,7 +77,7 @@ try {
         $state,
         $postcode
     ]);
-    jsonResponse(true, 'Registration successful');
+    jsonResponse(true, 'Registration successful! Please login.');
 } catch (Exception $e) {
-    jsonResponse(false, 'Error during registration');
+    jsonResponse(false, 'An error occurred. Please try again.');
 }

@@ -1,5 +1,20 @@
 <?php
-// server/addToCart.php
+/**
+ * Adds a product to cart
+ * 
+ * Handles adding a product to the shopping cart for logged-in and guest users.
+ * Uses user_id for logged-in users and session_id for guests.
+ * 
+ * Supported HTTP Methods:
+ * - POST
+ * 
+ * Expected POST parameters:
+ * - productId (int)
+ * - quantity (int)
+ * 
+ * Response:
+ * - JSON { success: bool, message: string }
+ */
 require_once 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -31,7 +46,7 @@ try {
         $insertSql = "INSERT INTO cart_items (product_id, quantity, " . ($userId ? "user_id" : "session_id") . ") VALUES (?, ?, ?)";
         $conn->prepare($insertSql)->execute([$productId, $quantity, $userId ?: $sessionId]);
     }
-    jsonResponse(true, 'Product added to cart');
+    jsonResponse(true, 'Product added to cart!');
 } catch (Exception $e) {
     jsonResponse(false, 'Error adding to cart');
 }

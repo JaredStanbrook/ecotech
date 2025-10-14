@@ -1,5 +1,19 @@
 <?php
-// server/removeFromCart.php
+/**
+ * Removes an item from the current user's cart if logged in, or from the current
+ * session's cart.
+ *
+ * Request Method:
+ * - POST
+ *
+ * Expected POST Parameters:
+ * - productId (int)
+ *
+ * Response:
+ * - JSON { success: bool, message: string }
+ *
+ * @throws Exception If the database query fails.
+ */
 require_once 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

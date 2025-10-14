@@ -1,5 +1,16 @@
 <?php
-// server/adminDeleteProduct.php
+/**
+ * Removes a product from the database for an admin level user
+ * 
+ * Supported HTTP Methods:
+ * - POST
+ * 
+ * Expected POST parameters:
+ * - productId (int): ID of the product to remove from the database.
+ * 
+ * Response:
+ * - JSON { success: bool, message: string }
+ */
 require_once 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

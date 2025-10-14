@@ -30,7 +30,12 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// Database connection function
+/**
+ * Establishes and returns a PDO database connection.
+ *
+ * @return PDO The PDO database connection object
+ * @throws PDOException If the database connection fails
+ */
 function getDBConnection() {
     try {
         $conn = new PDO(
@@ -45,22 +50,38 @@ function getDBConnection() {
     }
 }
 
-// Utility function to check if user is logged in
+/**
+ * Checks if the current user is logged in.
+ *
+ * @return bool True if the user is logged in, false otherwise
+ */
 function isLoggedIn() {
     return isset($_SESSION['user_id']) && isset($_SESSION['username']);
 }
 
-// Utility function to check if user is staff
+/**
+ * Checks if the current user has a staff account type.
+ *
+ * @return bool True if the user is staff, false otherwise
+ */
 function isStaff() {
     return isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'staff';
 }
 
-// Utility function to check if user is customer
+/**
+ * Checks if the current user has a customer account type.
+ *
+ * @return bool True if the user is a customer, false otherwise
+ */
 function isCustomer() {
     return isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'customer';
 }
 
-// Get or create session ID for cart
+/**
+ * Retrieves the current session ID, creating one if it does not exist.
+ *
+ * @return string The current session ID.
+ */
 function getSessionId() {
     if (!isset($_SESSION['session_id'])) {
         $_SESSION['session_id'] = session_id();
@@ -68,7 +89,12 @@ function getSessionId() {
     return $_SESSION['session_id'];
 }
 
-// Sanitize input
+/**
+ * Sanitizes user input by trimming, stripping slashes, and escaping HTML characters.
+ *
+ * @param string $data The input data to sanitize.
+ * @return string The sanitized input.
+ */
 function sanitizeInput($data) {
     $data = trim($data);
     $data = stripslashes($data);
@@ -76,12 +102,23 @@ function sanitizeInput($data) {
     return $data;
 }
 
-// Validate email
+/**
+ * Validates whether the an email address is in a valid format.
+ *
+ * @param string $email The email address to validate.
+ * @return bool|string Returns the filtered email address if valid, false if invalid.
+ */
 function validateEmail($email) {
     return filter_var($email, FILTER_VALIDATE_EMAIL);
 }
 
-// Generate JSON response
+/**
+ * Sends a standardised JSON response and exits script execution.
+ *
+ * @param bool $success Indicates the success status of the response.
+ * @param string $message Optional message to include in the response.
+ * @param mixed $data Optional additional data to include in the response.
+ */
 function jsonResponse($success, $message = '', $data = null) {
     $response = ['success' => $success];
     if ($message) $response['message'] = $message;

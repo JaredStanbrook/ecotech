@@ -1,5 +1,21 @@
 <?php
-// server/adminAddProduct.php
+/**
+ * Adds a product to the database for an admin level user
+ * 
+ * Supported HTTP Methods:
+ * - POST
+ * 
+ * Expected POST parameters:
+ * - name (string)
+ * - category (string)
+ * - description (string)
+ * - price (float)
+ * - stock (int)
+ * - rating (int)
+ * 
+ * Response:
+ * - JSON { success: bool, message: string }
+ */
 require_once 'config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

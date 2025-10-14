@@ -1,5 +1,20 @@
 <?php
-// server/categories.php
+/**
+ * Retrieves all product categories
+ * 
+ * Supported HTTP Methods:
+ * - GET
+ * 
+ * Response:
+ * - JSON { 
+ *    success: bool,
+ *    message: string,
+ *    data: object {
+ *      category_name: string,
+ *      description: string
+ *    } 
+ *  }
+ */
 require_once 'config.php';
 
 // Only allow GET requests
