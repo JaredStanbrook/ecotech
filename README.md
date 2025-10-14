@@ -45,17 +45,68 @@ EcoTech Supplies is a fictitious company specializing in eco-friendly and sustai
 - `assignment2plan.md` — Project plan and company details
 - `assignmentGuide.md` — Assignment requirements and guidelines
 
-## Setup Instructions
+## Getting Started
 
-1. Import the `ecotech_supplies.sql` file into your MySQL database.
-2. Configure database connection details in `server/config.php`.
-3. Host the `server/` directory on a PHP-enabled web server (e.g., Apache).
-4. Open `webclient/index.html` in your browser for the web client.
-5. For mobile, package the Cordova client (not included in this repo) and test on an emulator or device.
+### 1. Prerequisites
+Make sure you have the following installed:
+- [PHP 8+](https://www.php.net/downloads)
+- [MySQL 8+](https://dev.mysql.com/downloads/mysql/)
+- [Apache](https://httpd.apache.org/) or a local server stack like [XAMPP](https://www.apachefriends.org/), [Laragon](https://laragon.org/), or [MAMP](https://www.mamp.info/en/).
+
+---
+
+### 2. Setup Instructions
+
+#### Step 1. Clone the Repository
+```bash
+git clone https://github.com/JaredStanbrook/ecotech-supplies.git
+cd ecotech-supplies
+```
+
+#### Step 2. Import the Database
+1. Open **MySQL CLI**.
+2. Create a new database:
+   ```sql
+   CREATE DATABASE ecotech_supplies;
+   ```
+3. Import the SQL file:
+   ```bash
+   mysql -u root -p ecotech_supplies < ecotech_supplies.sql
+   CREATE USER 'ecotech'@'localhost' IDENTIFIED BY 'password';
+   GRANT ALL PRIVILEGES ON ecotech_supplies.* TO 'ecotech'@'localhost';
+   FLUSH PRIVILEGES;
+   ```
+
+#### Step 3. Configure Server
+- Update database credentials in your main config file (if applicable, e.g. `/server/config.php`):
+  ```php
+  <?php
+  define('DB_HOST', 'localhost');
+  define('DB_NAME', 'ecotech_supplies');
+  define('DB_USER', 'ecotech');  // Change this for production
+  define('DB_PASS', 'password'); 
+  ?>
+  ```
+
+#### 4. Run the PHP Built-in Server
+From the project root (where your `/server` and `/webclient` folders are):
+```bash
+php -S localhost:8000 -t .
+```
+
+You’ll see:
+```
+PHP 8.2.0 Development Server (http://localhost:8000) started
+```
+
+#### 5. Access the App
+- Frontend: [http://localhost:8000/webclient/index.html](http://localhost:8000/webclient/index.html)  
+- Backend API: [http://localhost:8000/server/](http://localhost:8000/server/)
+
 
 ## User Accounts for Testing
 
-Create the following accounts in your database for testing (as per assignment requirements):
+The following accounts exiest in database for testing (as per assignment requirements):
 
 - Customers: `user1`, `user2`, `user3` (passwords same as usernames)
 - Staff: `staff1`, `staff2`, `staff3` (passwords same as usernames)
