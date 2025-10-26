@@ -842,6 +842,127 @@ function deleteProduct(productId) {
   });
 }
 
+/**
+ * Loads user data into the manage users admin dashboard panel
+ * 
+ * @description
+ * Sends a GET request to the server-side script: "adminGetUsers.php" to 
+ * retrieve all users from the database.
+ * Expects a JSON response with properties: "{ success: boolean, data: object }".
+ * @see ../server/adminGetUsers.php
+ */
+function loadAdminUsers() {
+  $.ajax({
+    url: "../server/adminGetUsers.php",
+    type: "GET",
+    dataType: "json",
+    success: function (response) {
+      if (response.success) {
+        displayAdminUsers(response.data);
+      }
+    },
+  });
+}
+
+/**
+ * Displays all users to the manage users admin dashboard panel
+ * @param {array} users Array of users to display
+ */
+function displayAdminUsers(users) {
+  let html = "<h3>Manage Users</h3>";
+  html += '<table style="width: 100%; border-collapse: collapse;">';
+  html += "<tr><th>ID</th><th>Username</th><th>Email</th><th>Type</th><th>Actions</th></tr>";
+
+  users.forEach(function (user) {
+    html += `
+              <tr>
+                  <td>${user.user_id}</td>
+                  <td>${user.username}</td>
+                  <td>${user.email}</td>
+                  <td>${user.user_type}</td>
+                  <td>
+                      <button class="btn btn-secondary" onclick="editUser(${user.user_id})">Edit</button>
+                      <button class="btn btn-danger" onclick="deleteUser(${user.user_id})">Delete</button>
+                  </td>
+              </tr>
+          `;
+  });
+
+  html += "</table>";
+  $("#adminWorkArea").html(html);
+}
+
+/**
+ * Deletes a specified user from the database for a user with admin privileges
+ * 
+ * @param {number} userId User ID to delete
+ * @description
+ * Sends a POST request to the server-side script: 
+ * "adminDeleteUser.php". Expects a JSON response with properties:
+ * "{ success: boolean, message: string }".
+ * @see ../server/adminDeleteUser.php
+ */
+function deleteUser(userId) {
+  if (!confirm("Are you sure you want to delete this user?")) return;
+
+  $.ajax({
+    url: "../server/adminDeleteUser.php",
+    type: "POST",
+    data: { userId: userId },
+    dataType: "json",
+    success: function (response) {
+      if (response.success) {
+        showMessage(response.message, "success");
+        loadAdminUsers();
+      } else {
+        showMessage(response.message, "error");
+      }
+    },
+  });
+}
+
+/**
+ * Loads all orders for the manage orders admin dashboard panel
+ * @param {array} orders Array of orders to display
+ */
+function loadAdminOrders() {
+  $.ajax({
+    url: "../server/adminGetOrders.php",
+    type: "GET",
+    dataType: "json",
+    success: function (response) {
+      if (response.success) {
+        displayAdminOrders(response.data);
+      }
+    },
+  });
+}
+
+/**
+ * Displays all orders to the manage orders admin dashboard panel
+ * @param {array} orders Array of orders to display
+ */
+function displayAdminOrders(orders) {
+  let html = "<h3>Ecotech Orders</h3>";
+  html += '<table style="width: 100%; border-collapse: collapse;">';
+  html += "<tr><th>Order ID</th><th>Date</th><th>User ID</th><th>Total</th><th>Status</th></tr>";
+
+  orders.forEach(function (order) {
+    html += `
+              <tr>
+                  <td>${order.order_id}</td>
+                  <td>${order.order_date}</td>
+                  <td>${order.user_id}</td>
+                  <td>${parseFloat(order.total_amount).toFixed(2)}</td>
+                  <td>${order.status}</td>
+              </tr>
+          `;
+  });
+
+  html += "</table>";
+  $("#adminWorkArea").html(html);
+}
+
 // Utility functions
 
 /**
