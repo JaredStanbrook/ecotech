@@ -255,6 +255,12 @@ section.active {
   background: #e74c3c;
 }
 
+.btn-disabled {
+  background: #707070;
+  pointer-events: none;
+  text-decoration: line-through;
+}
+
 .btn-danger:hover {
   background: #c0392b;
 }

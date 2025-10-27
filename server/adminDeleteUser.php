@@ -26,6 +26,10 @@ if (!$userId) {
     jsonResponse(false, 'User ID required');
 }
 
+if ($userId === $_SESSION['userId']) {
+    jsonResponse(false, "Error. You cannot delete your own account!");
+}
+
 try {
     $conn = getDBConnection();
     $stmt = $conn->prepare("DELETE FROM users WHERE user_id = ?");
