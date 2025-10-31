@@ -345,10 +345,10 @@ function displayProducts(productsToShow) {
                       <div class="product-price">${parseFloat(product.price).toFixed(2)}</div>
                       <div class="eco-rating">Eco Rating: ${ecoStars}</div>
                       <div class="product-stock">Stock: ${product.stock_quantity}</div>
-                      <button class="btn" onclick="addToCart(${
-                        product.product_id
-                      })">Add to Cart</button>
                   </div>
+                  <button class="btn" onclick="addToCart(${
+                        product.product_id
+                    })">Add to Cart</button>
               </div>
           `;
     container.append(card);
