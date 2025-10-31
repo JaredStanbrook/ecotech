@@ -762,7 +762,6 @@ function showAddProductForm() {
       `;
   $("#adminWorkArea").html(html);
   populateCategoryFilter(categoryFilterId);
-  $(`#${categoryFilterId}`).val(product.category_id).change();
 }
 
 /** 
@@ -989,6 +988,119 @@ function displayAdminUsers(users) {
   html += "</table>";
   $("#adminWorkArea").html(html);
 }
+
+// ### start
+
+function editUser(userId) {
+  $.ajax({
+    url: "../server/adminGetUserById.php",
+    type: "GET",
+    data: { userId: userId },
+    dataType: "json",
+    success: function (response) {
+      if (response.success) {
+        const user = response.data;
+        showEditUserForm(user);
+      } else {
+        showMessage(response.message, "error");
+      }
+    },
+  });
+}
+
+function showEditUserForm(user) {
+  const html = `
+        <h3>Edit User</h3>
+        <form id="editUserForm" onsubmit="updateUser(event, ${user.user_id})">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="editUsername" value="${user.username}" required">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="editUserEmail" value="${user.email}">
+            </div>
+            <div class="form-group">
+                <label>Password (leave blank to keep current password)</label>
+                <input type="password" id="editUserPassword" minlength="3">
+            </div>
+            <div class="form-group">
+                <label>First Name</label>
+                <input type="text" id="editUserFirstName" value="${user.first_name || ""}" required>
+            </div>
+            <div class="form-group">
+                <label>Last Name</label>
+                <input type="text" id="editUserLastName" value="${user.last_name || ""}" required>
+            </div>
+            <div class="form-group">
+                <label>User Type</label>
+                <select id="editUserType" required>
+                    <option value="customer" ${user.user_type === "customer" ? "selected" : ""}>Customer</option>
+                    <option value="staff" ${user.user_type === "staff" ? "selected" : ""}>Staff</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="tel" id="editUserPhone" value="${user.phone || ""}">
+            </div>
+            <div class="form-group">
+                <label>Address</label>
+                <input type="text" id="editUserAddress" value="${user.address || ""}">
+            </div>
+            <div class="form-group">
+                <label>City</label>
+                <input type="text" id="editUserCity" value="${user.city || ""}">
+            </div>
+            <div class="form-group">
+                <label>State</label>
+                <input type="text" id="editUserState" value="${user.state || ""}">
+            </div>
+            <div class="form-group">
+                <label>Postcode</label>
+                <input type="text" id="editUserPostcode" value="${user.postcode || ""}">
+            </div>
+            <button type="submit" class="btn">Update User</button>
+        </form>
+    `;
+  $("#adminWorkArea").html(html);
+}
+
+function updateUser(event, userId) {
+  event.preventDefault();
+
+  const userData = {
+    action: "update",
+    user_id: userId,
+    username: $("#editUsername").val(),
+    email: $("#editUserEmail").val(),
+    password: $("#editUserPassword").val(),
+    first_name: $("#editUserFirstName").val(),
+    last_name: $("#editUserLastName").val(),
+    user_type: $("#editUserType").val(),
+    phone: $("#editUserPhone").val(),
+    address: $("#editUserAddress").val(),
+    city: $("#editUserCity").val(),
+    state: $("#editUserState").val(),
+    postcode: $("#editUserPostcode").val(),
+  };
+
+  $.ajax({
+    url: "../server/adminUpdateUser.php",
+    type: "POST",
+    data: userData,
+    dataType: "json",
+    success: function (response) {
+      if (response.success) {
+        showMessage(response.message, "success");
+        loadAdminUsers();
+      } else {
+        showMessage(response.message, "error");
+      }
+    },
+  });
+}
+
+// ###
 
 /**
  * Deletes a specified user from the database for a user with admin privileges
