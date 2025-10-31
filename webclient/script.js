@@ -242,7 +242,7 @@ function loadCategories() {
     success: function (response) {
       if (response.success) {
         categories = response.data;
-        populateCategoryFilter();
+        populateCategoryFilter("categoryFilter");
         displayFeaturedCategories();
       }
     },
@@ -256,8 +256,8 @@ function loadCategories() {
  * Fills the select element with ID: "categoryFilter" with values based on the
  * values of the "categories" global array. 
  */
-function populateCategoryFilter() {
-  const select = $("#categoryFilter");
+function populateCategoryFilter(id) {
+  const select = $(`#${id}`);
   select.html('<option value="">All Categories</option>');
   categories.forEach(function (category) {
     select.append(
@@ -345,10 +345,10 @@ function displayProducts(productsToShow) {
                       <div class="product-price">${parseFloat(product.price).toFixed(2)}</div>
                       <div class="eco-rating">Eco Rating: ${ecoStars}</div>
                       <div class="product-stock">Stock: ${product.stock_quantity}</div>
-                      <button class="btn" onclick="addToCart(${
-                        product.product_id
-                      })">Add to Cart</button>
                   </div>
+                  <button class="btn" onclick="addToCart(${
+                        product.product_id
+                    })">Add to Cart</button>
               </div>
           `;
     container.append(card);
@@ -713,12 +713,8 @@ function displayAdminProducts(products) {
                   <td>${parseFloat(product.price).toFixed(2)}</td>
                   <td>${product.stock_quantity}</td>
                   <td>
-                      <button class="btn btn-secondary" onclick="editProduct(${
-                        product.product_id
-                      })">Edit</button>
-                      <button class="btn btn-danger" onclick="deleteProduct(${
-                        product.product_id
-                      })">Delete</button>
+                      <button class="btn btn-secondary" onclick="showEditProductForm(${product.product_id})">Edit</button>
+                      <button class="btn btn-danger" onclick="deleteProduct(${product.product_id})">Delete</button>
                   </td>
               </tr>
           `;
@@ -728,11 +724,12 @@ function displayAdminProducts(products) {
   $("#adminWorkArea").html(html);
 }
 
-/**
- * Displays an add product form element with ID: "addProductForm" to the admin
- * work area element ("#adminWorkArea").
+/** 
+ * Displays an add product form element with ID: "addProductForm" to the admin 
+ * work area element
  */
 function showAddProductForm() {
+  const categoryFilterId = "newProductCategory";
   const html = `
           <h3>Add New Product</h3>
           <form id="addProductForm" onsubmit="addProduct(event)">
@@ -742,7 +739,7 @@ function showAddProductForm() {
               </div>
               <div class="form-group">
                   <label>Category</label>
-                  <select id="newProductCategory" required></select>
+                  <select id="${categoryFilterId}" required></select>
               </div>
               <div class="form-group">
                   <label>Description</label>
@@ -764,12 +761,105 @@ function showAddProductForm() {
           </form>
       `;
   $("#adminWorkArea").html(html);
+  populateCategoryFilter(categoryFilterId);
+}
 
-  // Populate categories
-  categories.forEach(function (category) {
-    $("#newProductCategory").append(
-      `<option value="${category.category_id}">${category.category_name}</option>`
-    );
+/** 
+ * Displays an add product form element with ID: "editProductForm" to the admin
+ * work area element
+ */
+function showEditProductForm(product_id) {
+  if (!product_id) {
+    showMessage("Missing product to edit.", "error");
+    return;
+  }
+  const product = products.find((p) => Number(p.product_id) === Number(product_id));
+
+  if (!product) {
+    showMessage("Product not found.", "error");
+    return;
+  }
+  const categoryFilterId = "editProductCategory";
+  const html = `
+    <h3>Edit Product</h3>
+    <form id="editProductForm" onsubmit="updateProduct(event)">
+        <input type="hidden" id="editProductId" value="${product.product_id}">
+        <div class="form-group">
+            <label>Product Name</label>
+            <input type="text" id="editProductName" value="${product.product_name}" required>
+        </div>
+        <div class="form-group">
+            <label>Category</label>
+            <select id="${categoryFilterId}" required></select>
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea id="editProductDescription" rows="3">${product.description}</textarea>
+        </div>
+        <div class="form-group">
+            <label>Price</label>
+            <input type="number" id="editProductPrice" step="0.01" min="0" value="${product.price}" required>
+        </div>
+        <div class="form-group">
+            <label>Stock Quantity</label>
+            <input type="number" id="editProductStock" min="0" value="${product.stock_quantity}" required>
+        </div>
+        <div class="form-group">
+            <label>Eco Rating (1-5)</label>
+            <input type="number" id="editProductRating" min="1" max="5" value="${product.eco_rating}">
+        </div>
+        <button type="submit" class="btn">Save Changes</button>
+        <button type="button" class="btn btn-light" onclick="loadAdminProducts()">Cancel</button>
+    </form>
+  `;
+
+  $("#adminWorkArea").html(html);
+  populateCategoryFilter(categoryFilterId);
+  $(`#${categoryFilterId}`).val(product.category_id).change();
+}
+
+/**
+ * Updates a product in the database for a user with admin privledges.
+ * 
+ * @param {SubmitEvent} event Submit event for the add product form element.
+ * @description
+ * Sends a POST request (data from edit product form element) to the server-side 
+ * script: "adminGetProducts.php". Expects a JSON response with properties: 
+ * "{ success: boolean, message: string }".
+ * @see ../server/adminGetProducts.php
+ */
+function updateProduct(event) {
+  event.preventDefault();
+
+  const product = {
+    action: "update",
+    product_id: Number($("#editProductId").val()),
+    product_name: $("#editProductName").val().trim(),
+    category_id: Number($("#editProductCategory").val()),
+    description: $("#editProductDescription").val().trim(),
+    price: parseFloat($("#editProductPrice").val()),
+    stock_quantity: parseInt($("#editProductStock").val()),
+    image_url: "",
+    specifications: "",
+    eco_rating: parseInt($("#editProductRating").val()),
+  };
+
+  $.ajax({
+    url: "../server/adminGetProducts.php",
+    type: "POST",
+    data: product,
+    dataType: "json",
+    success: function (response) {
+      if (response.success) {
+        showMessage(response.message, "success");
+        loadGetAdminProducts();
+      } else {
+        showMessage(response.message, "error");
+      }
+    },
+    error: function (response) {
+      showMessage(response.message, "error");
+    },
   });
 }
 
@@ -840,6 +930,247 @@ function deleteProduct(productId) {
       }
     },
   });
+}
+
+/**
+ * Loads user data into the manage users admin dashboard panel
+ * 
+ * @description
+ * Sends a GET request to the server-side script: "adminGetUsers.php" to 
+ * retrieve all users from the database.
+ * Expects a JSON response with properties: "{ success: boolean, data: object }".
+ * @see ../server/adminGetUsers.php
+ */
+function loadAdminUsers() {
+  $.ajax({
+    url: "../server/adminGetUsers.php",
+    type: "GET",
+    dataType: "json",
+    success: function (response) {
+      if (response.success) {
+        displayAdminUsers(response.data);
+      }
+    },
+  });
+}
+
+/**
+ * Displays all users to the manage users admin dashboard panel
+ * @param {array} users Array of users to display
+ */
+function displayAdminUsers(users) {
+  let html = "<h3>Manage Users</h3>";
+  html += '<table style="width: 100%; border-collapse: collapse;">';
+  html += "<tr><th>ID</th><th>Username</th><th>Email</th><th>Type</th><th>Actions</th></tr>";
+
+  users.forEach(function (user) {
+    // prevent showing delete button on client side, server side also prevents self deletion
+    const isSelf = Number(user.user_id) === Number(currentUser.userId);
+
+    html += `
+              <tr>
+                  <td>${user.user_id}</td>
+                  <td>${user.username}</td>
+                  <td>${user.email}</td>
+                  <td>${user.user_type}</td>
+                  <td>
+                      <button class="btn btn-secondary" onclick="editUser(${user.user_id})">Edit</button>
+                      ${
+                        isSelf
+                          ? `<button class="btn btn-disabled">Delete</button>`
+                          : `<button class="btn btn-danger" onclick="deleteUser(${user.user_id})">Delete</button>`
+                      }
+                  </td>
+              </tr>
+          `;
+  });
+
+  html += "</table>";
+  $("#adminWorkArea").html(html);
+}
+
+// ### start
+
+function editUser(userId) {
+  $.ajax({
+    url: "../server/adminGetUserById.php",
+    type: "GET",
+    data: { userId: userId },
+    dataType: "json",
+    success: function (response) {
+      if (response.success) {
+        const user = response.data;
+        showEditUserForm(user);
+      } else {
+        showMessage(response.message, "error");
+      }
+    },
+  });
+}
+
+function showEditUserForm(user) {
+  const html = `
+        <h3>Edit User</h3>
+        <form id="editUserForm" onsubmit="updateUser(event, ${user.user_id})">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="editUsername" value="${user.username}" required">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="editUserEmail" value="${user.email}">
+            </div>
+            <div class="form-group">
+                <label>Password (leave blank to keep current password)</label>
+                <input type="password" id="editUserPassword" minlength="3">
+            </div>
+            <div class="form-group">
+                <label>First Name</label>
+                <input type="text" id="editUserFirstName" value="${user.first_name || ""}" required>
+            </div>
+            <div class="form-group">
+                <label>Last Name</label>
+                <input type="text" id="editUserLastName" value="${user.last_name || ""}" required>
+            </div>
+            <div class="form-group">
+                <label>User Type</label>
+                <select id="editUserType" required>
+                    <option value="customer" ${user.user_type === "customer" ? "selected" : ""}>Customer</option>
+                    <option value="staff" ${user.user_type === "staff" ? "selected" : ""}>Staff</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="tel" id="editUserPhone" value="${user.phone || ""}">
+            </div>
+            <div class="form-group">
+                <label>Address</label>
+                <input type="text" id="editUserAddress" value="${user.address || ""}">
+            </div>
+            <div class="form-group">
+                <label>City</label>
+                <input type="text" id="editUserCity" value="${user.city || ""}">
+            </div>
+            <div class="form-group">
+                <label>State</label>
+                <input type="text" id="editUserState" value="${user.state || ""}">
+            </div>
+            <div class="form-group">
+                <label>Postcode</label>
+                <input type="text" id="editUserPostcode" value="${user.postcode || ""}">
+            </div>
+            <button type="submit" class="btn">Update User</button>
+        </form>
+    `;
+  $("#adminWorkArea").html(html);
+}
+
+function updateUser(event, userId) {
+  event.preventDefault();
+
+  const userData = {
+    action: "update",
+    user_id: userId,
+    username: $("#editUsername").val(),
+    email: $("#editUserEmail").val(),
+    password: $("#editUserPassword").val(),
+    first_name: $("#editUserFirstName").val(),
+    last_name: $("#editUserLastName").val(),
+    user_type: $("#editUserType").val(),
+    phone: $("#editUserPhone").val(),
+    address: $("#editUserAddress").val(),
+    city: $("#editUserCity").val(),
+    state: $("#editUserState").val(),
+    postcode: $("#editUserPostcode").val(),
+  };
+
+  $.ajax({
+    url: "../server/adminUpdateUser.php",
+    type: "POST",
+    data: userData,
+    dataType: "json",
+    success: function (response) {
+      if (response.success) {
+        showMessage(response.message, "success");
+        loadAdminUsers();
+      } else {
+        showMessage(response.message, "error");
+      }
+    },
+  });
+}
+
+// ###
+
+/**
+ * Deletes a specified user from the database for a user with admin privileges
+ * 
+ * @param {number} userId User ID to delete
+ * @description
+ * Sends a POST request to the server-side script: 
+ * "adminDeleteUser.php". Expects a JSON response with properties:
+ * "{ success: boolean, message: string }".
+ * @see ../server/adminDeleteUser.php
+ */
+function deleteUser(userId) {
+  if (!confirm("Are you sure you want to delete this user?")) return;
+
+  $.ajax({
+    url: "../server/adminDeleteUser.php",
+    type: "POST",
+    data: { userId: userId },
+    dataType: "json",
+    success: function (response) {
+      if (response.success) {
+        showMessage(response.message, "success");
+        loadAdminUsers();
+      } else {
+        showMessage(response.message, "error");
+      }
+    },
+  });
+}
+
+/**
+ * Loads all orders for the manage orders admin dashboard panel
+ * @param {array} orders Array of orders to display
+ */
+function loadAdminOrders() {
+  $.ajax({
+    url: "../server/adminGetOrders.php",
+    type: "GET",
+    dataType: "json",
+    success: function (response) {
+      if (response.success) {
+        displayAdminOrders(response.data);
+      }
+    },
+  });
+}
+
+/**
+ * Displays all orders to the manage orders admin dashboard panel
+ * @param {array} orders Array of orders to display
+ */
+function displayAdminOrders(orders) {
+  let html = "<h3>Ecotech Orders</h3>";
+  html += '<table style="width: 100%; border-collapse: collapse;">';
+  html += "<tr><th>Order ID</th><th>Date</th><th>User ID</th><th>Total</th><th>Status</th></tr>";
+
+  orders.forEach(function (order) {
+    html += `
+              <tr>
+                  <td>${order.order_id}</td>
+                  <td>${order.order_date}</td>
+                  <td>${order.user_id}</td>
+                  <td>${parseFloat(order.total_amount).toFixed(2)}</td>
+                  <td>${order.status}</td>
+              </tr>
+          `;
+  });
+
+  html += "</table>";
+  $("#adminWorkArea").html(html);
 }
 
 // Utility functions

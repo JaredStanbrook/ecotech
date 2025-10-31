@@ -37,8 +37,8 @@ $username = sanitizeInput($_POST['username'] ?? '');
 $email = sanitizeInput($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
 // Additional fields
-$firstName = sanitizeInput($_POST['first_name'] ?? '');
-$lastName = sanitizeInput($_POST['last_name'] ?? '');
+$firstName = sanitizeInput($_POST['firstName'] ?? '');
+$lastName = sanitizeInput($_POST['lastName'] ?? '');
 $userType = 'customer'; // Only allow customer registration
 $phone = sanitizeInput($_POST['phone'] ?? '');
 $address = sanitizeInput($_POST['address'] ?? '');

@@ -147,6 +147,11 @@ section.active {
 
 .product-card {
   background: white;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
@@ -255,6 +260,12 @@ section.active {
   background: #e74c3c;
 }
 
+.btn-disabled {
+  background: #707070;
+  pointer-events: none;
+  text-decoration: line-through;
+}
+
 .btn-danger:hover {
   background: #c0392b;
 }
@@ -323,6 +334,15 @@ section.active {
   margin-top: 1rem;
   padding-top: 1rem;
   border-top: 2px solid #27ae60;
+}
+
+/* Table styles */
+td, th {
+  text-align: center;
+}
+
+tr:nth-child(odd) {
+  background-color: #f2f2f2;
 }
 
 /* Modal Styles */
