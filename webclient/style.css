@@ -165,7 +165,7 @@ section.active {
 
 .product-image {
   height: 200px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #69626d 0%, #bcaf9c 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -337,7 +337,8 @@ section.active {
 }
 
 /* Table styles */
-td, th {
+td,
+th {
   text-align: center;
 }
 
