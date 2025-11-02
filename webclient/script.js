@@ -644,7 +644,6 @@ function displayAccountInfo(data) {
 
 // Admin functions
 
-
 /**
  * Displays the specified admin section and relevant data.
  * @param {string} section Admin section and data to display.
@@ -852,7 +851,7 @@ function updateProduct(event) {
     success: function (response) {
       if (response.success) {
         showMessage(response.message, "success");
-        loadGetAdminProducts();
+        loadProducts();
       } else {
         showMessage(response.message, "error");
       }
@@ -989,8 +988,6 @@ function displayAdminUsers(users) {
   $("#adminWorkArea").html(html);
 }
 
-// ### start
-
 function editUser(userId) {
   $.ajax({
     url: "../server/adminGetUserById.php",
@@ -1099,8 +1096,6 @@ function updateUser(event, userId) {
     },
   });
 }
-
-// ###
 
 /**
  * Deletes a specified user from the database for a user with admin privileges
